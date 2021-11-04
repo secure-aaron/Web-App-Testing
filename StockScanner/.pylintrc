@@ -1,0 +1,10 @@
+[MASTER]
+extension-pkg-whitelist=pydantic
+disable=
+    C0114, # missing-module-docstring
+    W0105, # pointless-string-statement
+    C0115, # missing-class-docstring
+    c0103, # python.linting.pylintArgs
+    C0116, # missing-function-docstring
+[FORMAT]
+max-line-length=240

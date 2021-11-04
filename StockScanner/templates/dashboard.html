@@ -1,0 +1,131 @@
+{% extends "layout.html" %} <!-- Use the layout specified in the layout document. -->
+
+
+{% block content %}
+<!-- This javascript would normally be in its own file. -->
+<script> 
+$(document).ready(function() {  // Prompt the user for their ticket symbols.
+    $("#add_stocks").click(function() {
+        $('.ui.modal').modal('show');
+    })
+     
+    $("#save").click(function() {
+        var symbols = $("#symbols").val();
+
+        console.log(symbols);  // This from data entered by the user will be logged in the console for web browser
+    
+        var stockSymbols = symbols.split("\n"); // splits symbols by line, thats all.
+
+        console.log(stockSymbols);
+
+        for (var i = 0; i < stockSymbols.length; ++i) {
+            console.log(stockSymbols[i]);
+
+            // POST request the API for every stock entered. ajax isnt the other way though. You can use html5 fetch and its built in. Axios js is also one.
+            $.ajax({
+                url: '/stock',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({"symbol": stockSymbols[i]}),
+                dataType: 'json'
+            })
+        }
+
+        $('.ui.modal').modal('hide'); // Hide the modal once the user submits their requests.
+    })
+});
+</script>
+
+
+<h1 class="ui header">First header</h1>
+Hello, this is the dashboard page.
+<div>
+</div> 
+
+
+<form>
+<div class="ui input">
+    <input name="forward_pe" type="text" placeholder="P/E Ratio" value="{{ forward_pe or ''}}"> <!-- five fields the same name as the colums in the database-->
+</div>
+
+<div class="ui input">
+    <input name="dividend_yield" type="text" placeholder="Dividend Yield" value="{{ dividend_yield or ''}}"> <!-- the or '' part fixes the "None" string from populating the text box by default.-->
+</div>
+
+
+<div class="ui checkbox">
+    <input name="ma50" type="checkbox" name="example" {% if ma50 %} checked="checked" {% endif %}> <!-- value will persist-->
+    <label>Above 50 Day MA</label>
+</div>
+
+
+<div class="ui checkbox">
+    <input name="ma200" type="checkbox" name="example" {% if ma200 %} checked="checked" {% endif %}> <!-- if ma200, then check the box-->
+    <label>Above 200 Day MA</label>
+</div>
+
+<!-- Browser should have ? at the end of the URL, so that means it will send a GET rquest.
+FastAPI will parse the URL with the name of whichever used elements below in the query
+
+
+-->
+
+<button type="submit" class="ui button primary">Filter</button> 
+</form>
+
+
+<div>
+    <button id="add_stocks" class="ui button">Add Asset</button>
+</div>
+
+
+<table class="ui celled table">
+    <thead>
+        <tr><th>Symbol</th> <!-- th means table heading-->
+            <th>Price</th>
+            <th>Forware P/E</th>
+            <th>Forward EPS</th>
+            <th>Dividend Yield</th>
+            <th>50 Day</th>
+            <th>200 Day</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for stock in stocks %}
+        <tr>
+            <td>{{ stock.symbol }}</td> <!-- database query/info goes here to display stocks entered-->
+            <td>{{ stock.price }}</td>
+            <td>{{ stock.forward_pe }}</td>
+            <td>{{ stock.forward_eps }}</td>
+            <td>{{ stock.dividend_yield }}</td>
+            <td>{{ stock.ma50 }}</td>
+            <td>{{ stock.ma200 }}</td> 
+            
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<div class="ui modal">
+<i class="close icon"></i>
+<div class="header">
+    Add Symbol
+</div>
+<div class="content">
+    <div class="ui form">
+        <div class="field">
+            <label>Enter Symbols</label>
+            <textarea id="symbols"></textarea>
+        </div>
+    </div>
+</div>
+<div class="actions">
+    
+    <div id="save" class="ui positive right labeled icon button">
+          Add Symbols
+          <i class="plus icon"></i>
+        </div>
+    </div>
+</div>
+{% endblock %}
