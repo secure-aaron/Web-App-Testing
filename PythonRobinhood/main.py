@@ -2,9 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 '''
-VIDEO: https://youtu.be/oy2ngCQx1uE
 After looking at the specified url using the wayback machine on specific dates, its safe to assube 20-80 are good threshholds to buy and sell respectively.
-
 '''
 FEAR_AND_GREED_URL = "https://money.cnn.com/data/fear-and-greed/" # Devlare final variable for the URL
 FEAR_AND_GREED_PHRASE = "Fear &amp; Greed Now: " # data in the html data to look for.
